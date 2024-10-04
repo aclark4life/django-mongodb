@@ -1,10 +1,25 @@
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
+from django.db import DatabaseError
+from functools import wraps
 
 from .query import wrap_database_errors
+from pymongo.errors import CollectionInvalid
+
+
+def wrap_schema_errors(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except CollectionInvalid as e:
+            pass
+
+    return wrapper
 
 
 class DatabaseSchemaEditor(BaseDatabaseSchemaEditor):
     @wrap_database_errors
+    @wrap_schema_errors
     def create_model(self, model):
         self.connection.database.create_collection(model._meta.db_table)
         # Make implicit M2M tables.
