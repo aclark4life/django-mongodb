@@ -11,8 +11,8 @@ from .features import DatabaseFeatures
 from .introspection import DatabaseIntrospection
 from .operations import DatabaseOperations
 from .query_utils import regex_match
+from .schema import DatabaseSchemaEditor
 from .utils import CollectionDebugWrapper
-from .utils import SchemaEditorWrapper
 
 
 class Cursor:
@@ -122,7 +122,7 @@ class DatabaseWrapper(BaseDatabaseWrapper):
     display_name = "MongoDB"
     vendor = "mongodb"
     Database = Database
-    SchemaEditorClass = SchemaEditorWrapper
+    SchemaEditorClass = DatabaseSchemaEditor
     client_class = DatabaseClient
     creation_class = DatabaseCreation
     features_class = DatabaseFeatures

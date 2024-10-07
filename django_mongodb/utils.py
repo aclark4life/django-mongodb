@@ -6,7 +6,6 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db.backends.utils import logger
 from django.utils.version import get_version_tuple
-from django_mongodb.schema import DatabaseSchemaEditor
 
 
 def check_django_compatability():
@@ -24,24 +23,6 @@ def check_django_compatability():
             f"You must use the latest version of django-mongodb {A}.{B}.x "
             f"with Django {A}.{B}.y (found django-mongodb {__version__})."
         )
-
-
-class SchemaEditorWrapper(DatabaseSchemaEditor):
-    def __init__(self, db, collect_sql=False, atomic=False, atomic_migration=False):
-        self.db = db
-        self.atomic_migration = atomic_migration
-        if collect_sql:
-            self.collected_sql = []
-
-    def __getattr__(self, attr):
-        return getattr(self.db, attr)
-
-    def logging_wrapper(method):
-        def wrapper(self, *args, **kwargs):
-            func = getattr(self.db, method)
-        return wrapper
-
-    create_model = logging_wrapper("create_model")
 
 
 class CollectionDebugWrapper:
